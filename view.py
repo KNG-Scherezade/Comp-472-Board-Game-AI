@@ -26,11 +26,11 @@ def print_board():
         i = i - 1
         for entry in row:
             if entry == 119:
-                board_str += "\033[100m" + (chr(119) + "\033[0m ")
+                board_str += "\033[1m\033[100m" + (chr(119) + "\033[0m ")
             elif entry == 114:
-                board_str += "\033[41m" + (chr(114) + "\033[0m ")
+                board_str += "\033[1m\033[41m" + (chr(114) + "\033[0m ")
             else:
-                board_str += "\033[107m" + (chr(data.get_empty_ascii()) + "\033[0m ")
+                board_str += "\033[3m" + (chr(data.get_empty_ascii()) + "\033[0m ")
         board_str += "\033[0m\n"
     board_str += "\t\033[1ma b c d e f g h i j k l\033[0m"
     print(board_str)
