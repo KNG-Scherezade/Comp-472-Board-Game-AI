@@ -18,6 +18,7 @@ def print_draw():
     print("\t\033[1mDraw: All moves and tokens exhausted\033[0m")
 
 
+# use terminal colors to decorate the board in the terminal
 def print_board():
     board_str = ""
     i = 10

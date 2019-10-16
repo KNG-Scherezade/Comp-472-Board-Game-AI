@@ -8,6 +8,7 @@ def check_move_count():
     return False
 
 
+# check if a move will result in player losing
 def check_losing_move(operation, x_position, y_position):
     # loss only occurs when you didn't place last
     if data.get_last_placement_character() == data.get_active_player_ascii():
@@ -77,6 +78,7 @@ def place_piece_on_board(operation, x_position, y_position):
     board[y_position_new, x_position_new] = data.get_active_player_ascii()
 
 
+# evaluates if an x is on a certain position
 def check_x_from_center(x, y):
     board = data.get_board()
     # proceed by checking invalidating conditions
@@ -99,6 +101,7 @@ def check_x_from_center(x, y):
     return True
 
 
+# check if player wins
 def check_win(operation, x_position, y_position):
     if operation == "m":
         x_position = ord(x_position.split("->")[1]) - 97

@@ -5,6 +5,7 @@ import view
 import re
 
 
+# process string input into components and check for issues 
 def split_input_str(input_str):
     if input_str.count(".") < 2:
         data.set_error_message("Poor formatting - Not enough fields")
@@ -40,6 +41,7 @@ def split_input_str(input_str):
     return input_arr[0], input_arr[1], input_arr[2], False
 
 
+# game loop to be done by a human
 def run_human_routine(input_str):
     if input_str == "RESIGN":
         view.print_resign()
