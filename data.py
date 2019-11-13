@@ -20,7 +20,6 @@ max_tokens = 15
 
 max_moves = 30
 
-
 def get_max_tokens():
     return max_tokens
 
@@ -32,9 +31,8 @@ def get_max_combo_moves():
 def get_board():
     return board
 
-
-def get_last_placement_character():
-    return last_placement_character
+def get_last_placement_ascii():
+    return last_placement_ascii
 
 
 def get_win_state():
@@ -107,3 +105,8 @@ def set_error_message(msg):
 def set_raw_player_data(data_arr):
     global player_data
     player_data = data_arr
+
+
+def set_board(new_board):
+    global board
+    board = new_board

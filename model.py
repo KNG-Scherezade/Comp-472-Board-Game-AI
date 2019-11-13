@@ -11,27 +11,24 @@ def check_move_count():
 # check if a move will result in player losing
 def check_losing_move(operation, x_position, y_position):
     # loss only occurs when you didn't place last
-    if data.get_last_placement_character() == data.get_active_player_ascii():
+    if data.get_last_placement_ascii() == data.get_active_player_ascii():
         return False
 
     if operation == "m":
         x_position = ord(x_position.split("->")[0]) - 97
         y_position = 10 - int(y_position.split("->")[0])
-    data.get_board()[y_position, x_position] = data.get_empty_ascii()
+        fail = False
     if check_x_from_center(x_position - 1, y_position):
-        data.get_board()[y_position, x_position] = data.get_active_player_ascii()
-        return True
+        fail = True
     if check_x_from_center(x_position + 1, y_position):
-        data.get_board()[y_position, x_position] = data.get_active_player_ascii()
-        return True
+        fail = True
     if check_x_from_center(x_position, y_position - 1):
-        data.get_board()[y_position, x_position] = data.get_active_player_ascii()
-        return True
+        fail = True
     if check_x_from_center(x_position, y_position + 1):
-        data.get_board()[y_position, x_position] = data.get_active_player_ascii()
-        return True
-    data.get_board()[y_position, x_position] = data.get_active_player_ascii()
-    return False
+        fail = True
+    if fail:
+        data.set_error_message("This move will result in a loss")
+    return fail
 
 
 def check_token_count():
@@ -133,8 +130,7 @@ def increment_counters(operation):
 
 
 def check_draw():
-    return data.get_both_placement_count() == data.get_max_tokens() \
-           and data.get_both_movement_count() >= data.get_max_combo_moves()
+    return data.get_both_movement_count() >= data.get_max_combo_moves()
 
 
 def swap_turn():

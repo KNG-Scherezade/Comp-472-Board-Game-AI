@@ -42,42 +42,49 @@ def split_input_str(input_str):
 
 
 # game loop to be done by a human
-def run_human_routine(input_str):
+def game_loop(input_str, suppress_displays=False):
     if input_str == "RESIGN":
-        view.print_resign()
+        if not suppress_displays:
+            view.print_resign()
         return False
 
     operation, x_position, y_position, error = split_input_str(input_str)
     if error:
-        view.print_error()
+        if not suppress_displays:
+            view.print_error()
         return True
 
     if operation == "m":
-        error = model.check_losing_move(operation, x_position, y_position)  # TODO
+        error = model.check_losing_move(operation, x_position, y_position)
     elif operation == "p":
         error = model.check_token_count()
     if error:
-        view.print_error()
+        if not suppress_displays:
+            view.print_error()
         return True
 
     error = model.check_overlap(operation, x_position, y_position)
     if error:
-        view.print_error()
+        if not suppress_displays:
+            view.print_error()
         return True
 
     model.place_piece_on_board(operation, x_position, y_position)
-    view.print_board()
-    view.print_last_move(operation, x_position, y_position)
+    if not suppress_displays:
+        view.print_board()
+        view.print_last_move(operation, x_position, y_position)
 
-    win_check = model.check_win(operation, x_position, y_position)  # TODO
+    win_check = model.check_win(operation, x_position, y_position)
     if win_check:
-        view.print_winner()
+        if not suppress_displays:
+            view.print_winner()
         return False
 
     model.increment_counters(operation)
     draw_check = model.check_draw()
     if draw_check:
-        view.print_draw()
+        if not suppress_displays:
+            view.print_draw()
         return False
 
     model.swap_turn()
