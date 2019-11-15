@@ -4,7 +4,10 @@ import numpy as np
 # index [n][0] is color
 # index [n][1] is moved pieces
 # index [n][2] is placed pieces
-player_data = np.array([[119, 0, 0], [114, 0, 0]])
+
+p1_ascii = 119
+p2_ascii = 114
+player_data = np.array([[p1_ascii, 0, 0], [p2_ascii, 0, 0]])
 
 board = np.empty((10, 12), np.int8)
 empty_ascii = 48
@@ -87,6 +90,13 @@ def increment_active_move_count():
 def increment_active_placement_count():
     player_data[0, 2] = player_data[0, 2] + 1
 
+
+def decrement_active_move_count():
+    player_data[0, 1] = player_data[0, 1] - 1
+
+
+def decrement_active_placement_count():
+    player_data[0, 2] = player_data[0, 2] - 1
 
 def set_last_placement_ascii(symbol):
     global last_placement_ascii

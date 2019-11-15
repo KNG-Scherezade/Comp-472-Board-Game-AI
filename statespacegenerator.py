@@ -22,9 +22,9 @@ def return_storable_board(numpy_board):
         for y in x:
             if y == data.empty_ascii:
                 store = store + "1"
-            elif y == 119:
+            elif y == data.p1_ascii:
                 store = store + "2"  
-            elif y == 114:
+            elif y == data.p2_ascii:
                 store = store + "3"  
     return store
 
@@ -36,16 +36,12 @@ def return_numpy_board(storable_board):
         if chr == "1":
             no = data.empty_ascii
         if chr == "2":
-            no = 119       
+            no = data.p1_ascii       
         if chr == "3":
-            no = 114   
+            no = data.p2_ascii   
         np_board[math.floor(itter_no / 12)][itter_no % 12] = no
         itter_no += 1
     return np_board
-
-def states_into_memory():
-    return
-
 
 if __name__ == "__main__":
     open_list = queue.Queue()
@@ -91,7 +87,7 @@ if __name__ == "__main__":
                     open_list.put(conn_board)
         # now for all the moves
         search_piece = "1"
-        if data.get_active_player_ascii == 119:
+        if data.get_active_player_ascii == data.p1_ascii:
                     search_piece = "2"  
         else:
             search_piece = "3"

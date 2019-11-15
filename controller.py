@@ -42,15 +42,15 @@ def split_input_str(input_str):
 
 
 # game loop to be done by a human
-def game_loop(input_str, suppress_displays=False):
+def game_loop(input_str, ai_trial_input=False):
     if input_str == "RESIGN":
-        if not suppress_displays:
+        if not ai_trial_input:
             view.print_resign()
         return False
 
     operation, x_position, y_position, error = split_input_str(input_str)
     if error:
-        if not suppress_displays:
+        if not ai_trial_input:
             view.print_error()
         return True
 
@@ -59,33 +59,33 @@ def game_loop(input_str, suppress_displays=False):
     elif operation == "p":
         error = model.check_token_count()
     if error:
-        if not suppress_displays:
+        if not ai_trial_input:
             view.print_error()
         return True
 
     error = model.check_overlap(operation, x_position, y_position)
     if error:
-        if not suppress_displays:
+        if not ai_trial_input:
             view.print_error()
         return True
 
     model.place_piece_on_board(operation, x_position, y_position)
-    if not suppress_displays:
+    if not ai_trial_input:
         view.print_board()
         view.print_last_move(operation, x_position, y_position)
 
     win_check = model.check_win(operation, x_position, y_position)
     if win_check:
-        if not suppress_displays:
+        if not ai_trial_input:
             view.print_winner()
         return False
 
     model.increment_counters(operation)
     draw_check = model.check_draw()
     if draw_check:
-        if not suppress_displays:
+        if not ai_trial_input:
             view.print_draw()
         return False
-
     model.swap_turn()
+    data.set_error_message("unset")
     return True

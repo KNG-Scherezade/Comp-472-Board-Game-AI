@@ -9,6 +9,7 @@
 
 import controller
 import xrudderai
+import data
 
 print("Comp 472 AI Project :: X-RUDDER\nKAI NICOLL-GRIFFITH :: 40012407")
 print("Type the number listed to play a certain game mode")
@@ -25,10 +26,13 @@ elif style == "2":
     game_active = True
     if order == "2":
         while game_active:
-            game_active = controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: "))
-            game_active = controller.game_loop(xrudderai.findBestSolution())
+            while data.get_error_message() != "unset":
+                game_active = controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: "))
+            game_active = controller.game_loop(xrudderai.d2_find_best_solution_no_store(min=True))
     else:
         while game_active:
-            game_active = controller.game_loop(xrudderai.findBestSolution()))
-            game_active = controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: ")
+            game_active = controller.game_loop(xrudderai.d2_find_best_solution_no_store(min=False))
+            game_active = controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: "))
+            while data.get_error_message() != "unset":
+                game_active = controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: "))
 print("X-Rudder done")
