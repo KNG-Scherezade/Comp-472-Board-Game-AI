@@ -38,13 +38,13 @@ def evaluate_heuristic(board):
                 
                 if x - 1 >= 0 and y + 1 < 10:
                     if board[y + 1][x - 1] == opposing_ascii:
-                        h -= 1
+                        h -= 4
                     elif board[y + 1][x - 1] == active_ascii:
-                        h += 2
+                        h += 4
                         
                 if x - 1 >= 0:
                     if board[y][x - 1] == opposing_ascii:
-                        h -= 2
+                        h -= 1
                     elif board[y][x - 1] == active_ascii:
                         h += 1
                         
@@ -56,9 +56,9 @@ def evaluate_heuristic(board):
                         
                 if x - 1 >= 0 and y - 1 >= 0:
                     if board[y - 1][x - 1] == opposing_ascii:
-                        h -= 1
+                        h -= 4
                     elif board[y - 1][x - 1] == active_ascii:
-                        h += 2
+                        h += 4
                         
                 if y - 1 >= 0:
                     if board[y - 1][x] == opposing_ascii:
@@ -68,9 +68,9 @@ def evaluate_heuristic(board):
                         
                 if x + 1 < 12 and y + 1 < 10:
                     if board[y + 1][x + 1] == opposing_ascii:
-                        h -= 1
+                        h -= 4
                     elif board[y + 1][x + 1] == active_ascii:
-                        h += 2
+                        h += 4
                         
                 if x + 1 < 12:
                     if board[y][x + 1] == opposing_ascii:
@@ -80,18 +80,18 @@ def evaluate_heuristic(board):
                         
                 if x + 1 < 12 and y - 1 < 10:
                     if board[y - 1][x + 1] == opposing_ascii:
-                        h -= 1
+                        h -= 4
                     elif board[y - 1][x + 1] == active_ascii:
-                        h += 2
+                        h += 4
     return h
 
-def d2_find_best_solution_no_store(min):
+def d2_find_best_solution_no_store():
     global depth
-    max = not min
-    alpha = float("inf")
-    beta = float("-inf")
+
+    alpha = float("-inf")
+    beta = float("inf")
     current_best_move = "RESIGN"
-    current_best_heuristic = 0
+    alpha = 0
 
     store_board_d0 = np.copy(data.board)
     store_player_data_d0 = np.copy(data.get_raw_player_data())
@@ -101,10 +101,15 @@ def d2_find_best_solution_no_store(min):
     for xd1 in "abcdefghijkl":
         for yd1 in range(1,11):
             # placement
-            controller.game_loop("p." + str(xd1) + '.' + str(yd1), True)
+            exit_reached = not controller.game_loop("p." + str(xd1) + '.' + str(yd1), True)
             if data.get_error_message() == "unset":
-                if data.win_state != "unset":
-                    print("ws")
+                if exit_reached:
+                    data.error_msg = "unset"  
+                    data.board = np.copy(store_board_d0)
+                    data.player_data = np.copy(store_player_data_d0)
+                    data.win_state = store_win_state_d0
+                    data.last_placement_ascii = store_last_placement_ascii_d0     
+                    print("p." + str(xd1) + '.' + str(yd1))
                     return "p." + str(xd1) + '.' + str(yd1)
                 store_board_d1 = np.copy(data.board)
                 store_player_data_d1 = np.copy(data.get_raw_player_data())
@@ -117,30 +122,33 @@ def d2_find_best_solution_no_store(min):
                         controller.game_loop("p." + str(xd2) + '.' + str(yd2), True)
                         if data.get_error_message() == "unset":
                             h = evaluate_heuristic(data.board)
-                            if max and h < beta or min and h > alpha:
+                            #print(str(alpha) + " " + str(beta) + " " + str(h) + " " + "p." + str(xd2) + '.' + str(yd2))
+                            if h > beta:
+                                #print("a-b prune")
                                 inner_break = True
                                 break
-                            if not min and h >= current_best_heuristic or not max and h <= current_best_heuristic:
+                            if h >= alpha:
                                 current_best_move = "p." + str(xd1) + '.' + str(yd1)
-                                current_best_heuristic = h 
-                            
+                                alpha = h 
+                            #print(current_best_move)
                             data.board = np.copy(store_board_d1)
                             data.player_data = np.copy(store_player_data_d1)
                             data.win_state = store_win_state_d1
                             data.last_placement_ascii = store_last_placement_ascii_d1
+                        '''
                         for xdm2 in "abcdefghijkl":
                             for ydm2 in range(1,11):
                                 if data.board[ydm2 - 1][ord(xdm2) - 97] != data.empty_ascii:
                                     controller.game_loop("m." + str(xd2) + '->' + 
                                         str(xdm2) + '.' + str(yd2) + '->' +  str(ydm2), True)
                                     if data.get_error_message() == "unset":
-                                        h = evaluate_heuristic(data.board)
-                                        if max and h < beta or min and h > alpha:
+                                        h = evaluate_heuristic(data.board) + 10
+                                        if h > beta:
                                             inner_break = True
                                             break
-                                        if not min and h >= current_best_heuristic or not max and h <= current_best_heuristic:
+                                        if h >= alpha:
                                             current_best_move = "p." + str(xd1) + '.' + str(yd1)
-                                            current_best_heuristic = h 
+                                            alpha = h 
                                         
                                         data.board = np.copy(store_board_d1)
                                         data.player_data = np.copy(store_player_data_d1)
@@ -148,20 +156,19 @@ def d2_find_best_solution_no_store(min):
                                         data.last_placement_ascii = store_last_placement_ascii_d1    
                             if inner_break:
                                 break
+                        '''   
                         data.error_msg = "unset"
                     if inner_break:
                         break
-            if not min and current_best_heuristic >= beta:
-                beta = current_best_heuristic  
-            elif not max and current_best_heuristic <= alpha:
-                alpha = current_best_heuristic
-            current_best_heuristic = 0
+            if alpha <= beta:
+                beta = alpha  
+            alpha = 0
             data.board = np.copy(store_board_d0)
             data.player_data = np.copy(store_player_data_d0)
             data.win_state = store_win_state_d0
             data.last_placement_ascii = store_last_placement_ascii_d0
             data.error_msg = "unset"  
-            
+            '''
             # movement
             for xdm1 in "abcdefghijkl":
                 for ydm1 in range(1,11):
@@ -180,13 +187,13 @@ def d2_find_best_solution_no_store(min):
                                 for yd2 in range(1,11):
                                     controller.game_loop("p." + str(xd2) + '.' + str(yd2), True)
                                     if data.get_error_message() == "unset":
-                                        h = evaluate_heuristic(data.board)
-                                        if max and h < beta or min and h > alpha:
+                                        h = evaluate_heuristic(data.board) - 10
+                                        if h > beta:
                                             inner_break = True
                                             break
-                                        if not min and h >= current_best_heuristic or not max and h <= current_best_heuristic:
-                                            current_best_move = "p." + str(xd1) + '.' + str(yd1)
-                                            current_best_heuristic = h 
+                                        if h >= alpha:
+                                            current_best_move = "m." + str(xd1) + '->' + str(xdm1) + '.' + str(yd1) + '->' +  str(ydm1)
+                                            alpha = h 
                                         
                                         data.board = np.copy(store_board_d1)
                                         data.player_data = np.copy(store_player_data_d1)
@@ -198,13 +205,13 @@ def d2_find_best_solution_no_store(min):
                                                 controller.game_loop("m." + str(xd2) + '->' + 
                                                     str(xdm2) + '.' + str(yd2) + '->' +  str(ydm2), True)
                                                 if data.get_error_message() == "unset":
-                                                    h = evaluate_heuristic(data.board)
-                                                    if max and h < beta or min and h > alpha:
+                                                    h = evaluate_heuristic(data.board) + 10
+                                                    if h > beta:
                                                         inner_break = True
                                                         break
-                                                    if not min and h >= current_best_heuristic or not max and h <= current_best_heuristic:
-                                                        current_best_move = "p." + str(xd1) + '.' + str(yd1)
-                                                        current_best_heuristic = h 
+                                                    if h >= alpha:
+                                                        current_best_move = "m." + str(xd1) + '->' + str(xdm1) + '.' + str(yd1) + '->' +  str(ydm1)
+                                                        alpha = h 
                                                     
                                                     data.board = np.copy(store_board_d1)
                                                     data.player_data = np.copy(store_player_data_d1)
@@ -216,20 +223,18 @@ def d2_find_best_solution_no_store(min):
                                 if inner_break:
                                     break        
                                     
-                            if not max and current_best_heuristic <= alpha:
-                                alpha = current_best_heuristic  
-                            elif not min and current_best_heuristic >= beta:
-                                beta = current_best_heuristic
-                        if not min and current_best_heuristic >= beta:
-                            beta = current_best_heuristic  
-                        elif not max and current_best_heuristic <= alpha:
-                            alpha = current_best_heuristic
-                        current_best_heuristic = 0
+                            if alpha >= beta:
+                                beta = alpha
+                        if alpha >= beta:
+                            beta = alpha  
+                        
+                        alpha = 0
                         data.board = np.copy(store_board_d0)
                         data.player_data = np.copy(store_player_data_d0)
                         data.win_state = store_win_state_d0
                         data.last_placement_ascii = store_last_placement_ascii_d0
-                        data.error_msg = "unset"  
+                        data.error_msg = "unset"
+            '''     
     data.error_msg = "unset"  
     data.board = np.copy(store_board_d0)
     data.player_data = np.copy(store_player_data_d0)

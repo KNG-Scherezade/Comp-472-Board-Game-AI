@@ -10,7 +10,7 @@ p2_ascii = 114
 player_data = np.array([[p1_ascii, 0, 0], [p2_ascii, 0, 0]])
 
 board = np.empty((10, 12), np.int8)
-empty_ascii = 48
+empty_ascii = 43
 board.fill(empty_ascii)
 
 error_msg = "unset"

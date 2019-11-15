@@ -79,6 +79,8 @@ def place_piece_on_board(operation, x_position, y_position):
 def check_x_from_center(x, y):
     board = data.get_board()
     # proceed by checking invalidating conditions
+    if not (x >= 0 and y < 10 and x < 12 and y >= 0 and board[y, x] == data.get_active_player_ascii()):
+        return False
     if not (x - 1 >= 0 and y + 1 < 10 and board[y + 1, x - 1] == data.get_active_player_ascii()):
         return False
     if not (x + 1 < 12 and y + 1 < 10 and board[y + 1, x + 1] == data.get_active_player_ascii()):
@@ -106,7 +108,7 @@ def check_win(operation, x_position, y_position):
     elif operation == "p":
         x_position = ord(x_position) - 97
         y_position = 10 - int(y_position)
-
+    data.win_state = "winner"
     if check_x_from_center(x_position, y_position):
         return True
     if check_x_from_center(x_position - 1, y_position + 1):
@@ -117,6 +119,7 @@ def check_win(operation, x_position, y_position):
         return True
     if check_x_from_center(x_position + 1, y_position - 1):
         return True
+    data.win_state = "unset"
     return False
 
 

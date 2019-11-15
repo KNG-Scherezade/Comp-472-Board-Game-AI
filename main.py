@@ -26,13 +26,20 @@ elif style == "2":
     game_active = True
     if order == "2":
         while game_active:
+            if not controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: ")):
+                break
             while data.get_error_message() != "unset":
-                game_active = controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: "))
-            game_active = controller.game_loop(xrudderai.d2_find_best_solution_no_store(min=True))
+                if not controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: ")):
+                    break
+            if not controller.game_loop(xrudderai.d2_find_best_solution_no_store()):
+                break
     else:
         while game_active:
-            game_active = controller.game_loop(xrudderai.d2_find_best_solution_no_store(min=False))
-            game_active = controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: "))
+            if not controller.game_loop(xrudderai.d2_find_best_solution_no_store()):
+                break
+            if not controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: ")):
+                break
             while data.get_error_message() != "unset":
-                game_active = controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: "))
+                if not controller.game_loop(input("Perform a Placement, a Move (p.j.10 or m.j->b.10->2) or type RESIGN: ")):
+                    break
 print("X-Rudder done")
