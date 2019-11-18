@@ -76,18 +76,30 @@ def place_piece_on_board(operation, x_position, y_position):
 
 
 # evaluates if an x is on a certain position
-def check_x_from_center(x, y):
+def check_x_from_center(x, y, reverse_ascii=False):
     board = data.get_board()
     # proceed by checking invalidating conditions
+    if reverse_ascii:
+        data.reverse_player_data()
     if not (x >= 0 and y < 10 and x < 12 and y >= 0 and board[y, x] == data.get_active_player_ascii()):
+        if reverse_ascii:
+            data.reverse_player_data()
         return False
     if not (x - 1 >= 0 and y + 1 < 10 and board[y + 1, x - 1] == data.get_active_player_ascii()):
+        if reverse_ascii:
+            data.reverse_player_data()    
         return False
     if not (x + 1 < 12 and y + 1 < 10 and board[y + 1, x + 1] == data.get_active_player_ascii()):
+        if reverse_ascii:
+            data.reverse_player_data()        
         return False
     if not (x - 1 >= 0 and y - 1 >= 0 and board[y - 1, x - 1] == data.get_active_player_ascii()):
+        if reverse_ascii:
+            data.reverse_player_data()
         return False
     if not (x + 1 < 12 and y - 1 >= 0 and board[y - 1, x + 1] == data.get_active_player_ascii()):
+        if reverse_ascii:
+            data.reverse_player_data()
         return False
 
     # check cross X
@@ -95,8 +107,11 @@ def check_x_from_center(x, y):
             board[y, x - 1] == data.get_opposing_player_ascii()) or \
             (y - 1 > 0 and y + 1 <= 10 and board[y + 1, x] == data.get_opposing_player_ascii() and
              board[y - 1, x] == data.get_opposing_player_ascii()):
+        if reverse_ascii:
+            data.reverse_player_data()
         return False
-
+    if reverse_ascii:
+        data.reverse_player_data()
     return True
 
 
@@ -109,6 +124,7 @@ def check_win(operation, x_position, y_position):
         x_position = ord(x_position) - 97
         y_position = 10 - int(y_position)
     data.win_state = "winner"
+    data.set_error_message("unset")
     if check_x_from_center(x_position, y_position):
         return True
     if check_x_from_center(x_position - 1, y_position + 1):
