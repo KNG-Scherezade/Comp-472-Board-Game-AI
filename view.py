@@ -11,7 +11,7 @@ def print_error():
 
 
 def print_winner():
-    print("\t\033[1mWinner: " + chr(data.get_active_player_ascii()) + "")
+    print("\tWinner: " + chr(data.get_active_player_ascii()) + "")
 
 
 def print_draw():
@@ -37,11 +37,5 @@ def print_board():
     print(board_str)
 
 
-def print_last_move(operation, x_position, y_position):
-    if operation == 'm':
-        print("" + chr(data.get_active_player_ascii()) +
-              " moved with " + x_position + "," + y_position + "")
-    if operation == 'p':
-        print("" + chr(data.get_active_player_ascii()) +
-              " placed at " + x_position + "," + y_position +
-              "(" + str(data.get_active_placement_count() + 1) + "/" + str(data.get_max_tokens()) + ")")
+def print_last_move(operation):
+    print(operation)

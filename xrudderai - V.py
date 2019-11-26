@@ -37,47 +37,47 @@ def twoway_convolution(board, y, x):
         if board[0,1] == active_ascii:
             if board[1,0] == active_ascii:
                 if board[1,1] == active_ascii:
-                    h += 1
+                    h += -4
                 elif board[1,1] == opposing_ascii:
                     h += 1
                 else:
-                    h += 1
+                    h += -1
             elif board[1,0] == opposing_ascii:
                 if board[1,1] == active_ascii:
                     h += 1
                 elif board[1,1] == opposing_ascii:
                     h += -1
                 else:
-                    h += -1          
+                    h += -2          
             else:
                 if board[1,1] == active_ascii:
                     h += 1
                 elif board[1,1] == opposing_ascii:
                     h += 0
                 else:
-                    h += 1       
-        if board[0,1] == opposing_ascii:
+                    h += -1       
+        elif board[0,1] == opposing_ascii:
             if board[1,0] == active_ascii:
                 if board[1,1] == active_ascii:
                     h += 1
                 elif board[1,1] == opposing_ascii:
                     h += 1
                 else:
-                    h += 1
+                    h += -2
             elif board[1,0] == opposing_ascii:
                 if board[1,1] == active_ascii:
                     h += 1
                 elif board[1,1] == opposing_ascii:
                     h += -1
                 else:
-                    h += -1          
+                    h += 1          
             else:
                 if board[1,1] == active_ascii:
                     h += 1
                 elif board[1,1] == opposing_ascii:
                     h += 0
                 else:
-                    h += 1 
+                    h += -1 
         else:
             if board[1,0] == active_ascii:
                 if board[1,1] == active_ascii:
@@ -95,9 +95,9 @@ def twoway_convolution(board, y, x):
                     h += -1          
             else:
                 if board[1,1] == active_ascii:
-                    h += 1
+                    h += 4
                 elif board[1,1] == opposing_ascii:
-                    h += 0
+                    h += -1
                 else:
                     h += 1            
     elif board[0,0] == opposing_ascii:
@@ -108,7 +108,7 @@ def twoway_convolution(board, y, x):
                 elif board[1,1] == opposing_ascii:
                     h += 1
                 else:
-                    h += 1
+                    h += -1
             elif board[1,0] == opposing_ascii:
                 if board[1,1] == active_ascii:
                     h += 1
@@ -122,8 +122,8 @@ def twoway_convolution(board, y, x):
                 elif board[1,1] == opposing_ascii:
                     h += 0
                 else:
-                    h += 1       
-        if board[0,1] == opposing_ascii:
+                    h += -1       
+        elif board[0,1] == opposing_ascii:
             if board[1,0] == active_ascii:
                 if board[1,1] == active_ascii:
                     h += 1
@@ -135,9 +135,9 @@ def twoway_convolution(board, y, x):
                 if board[1,1] == active_ascii:
                     h += 1
                 elif board[1,1] == opposing_ascii:
-                    h += -1
+                    h += +4
                 else:
-                    h += -1          
+                    h += +1          
             else:
                 if board[1,1] == active_ascii:
                     h += 1
@@ -150,9 +150,9 @@ def twoway_convolution(board, y, x):
                 if board[1,1] == active_ascii:
                     h += 1
                 elif board[1,1] == opposing_ascii:
-                    h += 1
+                    h += 4
                 else:
-                    h += 1
+                    h += -1
             elif board[1,0] == opposing_ascii:
                 if board[1,1] == active_ascii:
                     h += 1
@@ -162,16 +162,16 @@ def twoway_convolution(board, y, x):
                     h += -1          
             else:
                 if board[1,1] == active_ascii:
-                    h += 1
+                    h += -1
                 elif board[1,1] == opposing_ascii:
-                    h += 0
+                    h += -4
                 else:
-                    h += 1 
+                    h += -1 
     else:
         if board[0,1] == active_ascii:
             if board[1,0] == active_ascii:
                 if board[1,1] == active_ascii:
-                    h += 1
+                    h += -1
                 elif board[1,1] == opposing_ascii:
                     h += 1
                 else:
@@ -187,53 +187,53 @@ def twoway_convolution(board, y, x):
                 if board[1,1] == active_ascii:
                     h += 1
                 elif board[1,1] == opposing_ascii:
-                    h += 0
+                    h += -1
                 else:
                     h += 1       
-        if board[0,1] == opposing_ascii:
+        elif board[0,1] == opposing_ascii:
             if board[1,0] == active_ascii:
                 if board[1,1] == active_ascii:
                     h += 1
                 elif board[1,1] == opposing_ascii:
-                    h += 1
+                    h += -1
                 else:
-                    h += 1
+                    h += -1
             elif board[1,0] == opposing_ascii:
                 if board[1,1] == active_ascii:
                     h += 1
                 elif board[1,1] == opposing_ascii:
-                    h += -1
+                    h += 1
                 else:
-                    h += -1          
+                    h += 1          
             else:
                 if board[1,1] == active_ascii:
-                    h += 1
+                    h += -1
                 elif board[1,1] == opposing_ascii:
-                    h += 0
+                    h += -1
                 else:
-                    h += 1 
+                    h += -1 
         else:
             if board[1,0] == active_ascii:
                 if board[1,1] == active_ascii:
                     h += 1
                 elif board[1,1] == opposing_ascii:
-                    h += 1
+                    h += -1
                 else:
                     h += 1
             elif board[1,0] == opposing_ascii:
                 if board[1,1] == active_ascii:
-                    h += 1
+                    h += -1
                 elif board[1,1] == opposing_ascii:
                     h += -1
                 else:
                     h += -1          
             else:
                 if board[1,1] == active_ascii:
-                    h += 1
+                    h += -1
                 elif board[1,1] == opposing_ascii:
-                    h += 0
+                    h += 1
                 else:
-                    h += 1         
+                    h += 0        
     return h
 
 def threeway_convolution(board, y, x):
@@ -257,13 +257,13 @@ def threeway_convolution(board, y, x):
             (board[0,0] == active_ascii and board[1,1] == active_ascii and board[2,0] == active_ascii) or \
             (board[2,0] == active_ascii and board[1,1] == active_ascii and board[2,2] == active_ascii) or \
             (board[2,2] == active_ascii and board[1,1] == active_ascii and board[0,2] == active_ascii):
-            h += 10
+            h -= 7
     elif not(board[0,1] == active_ascii or board[2,1] == active_ascii or board[1,0] == active_ascii or board[1,2] == active_ascii):
         if (board[0,0] == opposing_ascii and board[1,1] == opposing_ascii and board[0,2] == opposing_ascii) or \
             (board[0,0] == opposing_ascii and board[1,1] == opposing_ascii and board[2,0] == opposing_ascii) or \
             (board[2,0] == opposing_ascii and board[1,1] == opposing_ascii and board[2,2] == opposing_ascii) or \
             (board[2,2] == opposing_ascii and board[1,1] == opposing_ascii and board[0,2] == opposing_ascii):
-            h += -10
+            h += 7
     
     return h
 
@@ -278,10 +278,10 @@ def evaluate_heuristic(board):
         for y in range(0,10):
             if time_cutoff and time.time() - start > max_time:
                 break
-            if data.board[y, x] != data.empty_ascii:
-                h += twoway_convolution(board, y, x)
-                h += threeway_convolution(board, y, x)
-                h += positional_convolution(board, y, x) * 15 / data.get_both_placement_count()
+            #if data.board[y, x] != data.empty_ascii:
+            h += twoway_convolution(board, y, x)
+            h += threeway_convolution(board, y, x)
+            h += positional_convolution(board, y, x) * 15 / data.get_both_placement_count()
     return h
      
 
@@ -482,6 +482,7 @@ def d2_find_best_solution_no_store():
         current_best_move = resign_case_move
     print(current_best_move + " " + str(alpha) + " " + str(beta) + " " + str(time.time() - start))
     return current_best_move
+
 
     
 if __name__ == "__main__":

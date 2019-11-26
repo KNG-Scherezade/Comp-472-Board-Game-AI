@@ -4,7 +4,6 @@ import view
 
 import re
 
-
 # process string input into components and check for issues 
 def split_input_str(input_str):
     if input_str.count(".") < 2:
@@ -40,14 +39,36 @@ def split_input_str(input_str):
 
     return input_arr[0], input_arr[1], input_arr[2], False
 
+def convert_ta_input(input):
+    input = input.lower()
+    input_arr = input.split(" ")
+    preffered_str = ""
+    if len(input_arr) == 1:
+        if len(re.findall("^[a-l]([1-9]|[1][0-2])$", input)) < 1:
+            data.set_error_message("Poor formatting")
+            return "",True
+        preffered_str = "p." + input_arr[0][0:1] + "." + input_arr[0][1:]
+    elif len(input_arr) == 2:
+        if len(re.findall("^[a-l]([1-9]|[1][0-2]) [a-l]([1-9]|[1][0-2])$", input)) < 1:
+            data.set_error_message("Poor formatting")
+            return "",True
+        preffered_str = "m." + input_arr[0][0:1] +"->" + input_arr[1][0:1] + "." + input_arr[0][1:]  +"->" + input_arr[1][1:] 
+    else:
+        data.set_error_message("Poor formatting")
+        return "",True
+    return preffered_str, False
 
 # game loop to be done by a human
-def game_loop(input_str, ai_trial_input=False):
-    if input_str == "RESIGN":
+def game_loop(input_str_orig, ai_trial_input=False):
+    if input_str_orig == "RESIGN":
         if not ai_trial_input:
             view.print_resign()
         return False
-
+    input_str, error = convert_ta_input(input_str_orig)
+    if error:
+        if not ai_trial_input:
+            view.print_error()
+        return True
     operation, x_position, y_position, error = split_input_str(input_str)
     if error:
         if not ai_trial_input:
@@ -72,7 +93,7 @@ def game_loop(input_str, ai_trial_input=False):
     model.place_piece_on_board(operation, x_position, y_position)
     if not ai_trial_input:
         view.print_board()
-        view.print_last_move(operation, x_position, y_position)
+        view.print_last_move(input_str_orig)
 
     win_check = model.check_win(operation, x_position, y_position)
     if win_check:
