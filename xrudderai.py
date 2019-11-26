@@ -9,9 +9,9 @@ import time
 
 move_heuristic = 0
 defence_weight = 1
-positional_weight = 1
+positional_weight = 0.5
 time_cutoff = True
-max_time = 4.98
+max_time = 4.99
 start = 0
 def positional_convolution(board, y, x):
     h = 0
