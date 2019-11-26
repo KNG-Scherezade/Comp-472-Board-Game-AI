@@ -10,12 +10,14 @@ import queue
 import math
 import time
 
+from multiprocessing import Process, Queue
+
 
 move_heuristic = 0
 defence_weight = 1
 positional_weight = 1
-time_cutoff = False
-max_time = 4.95
+
+
 def positional_convolution(board, y, x):
     h = 0
     active_ascii = data.get_active_player_ascii()
@@ -28,232 +30,176 @@ def positional_convolution(board, y, x):
         h -= (-abs(x - 5.5) + 5.5) / 5.5
     return h * positional_weight
 
-def twoway_convolution(board, y, x):
+
+def threeway_convolution(board, y, x):
     active_ascii = data.get_active_player_ascii()
     opposing_ascii = data.get_opposing_player_ascii()
     h = 0
-    if y + 2 >= 10 or x + 2 >= 12:
+    if y + 3 >= 10 or x + 3 >= 12:
         return h
-    board = board[y:y+2, x:x+2]
+    board = board[y:y+3, x:x+3]
 
-    if board[0,0] == active_ascii:
-        if board[0,1] == active_ascii:
-            if board[1,0] == active_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 1
-                else:
-                    h += 1
-            elif board[1,0] == opposing_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += -1
-                else:
-                    h += -1          
-            else:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 0
-                else:
-                    h += 1       
-        if board[0,1] == opposing_ascii:
-            if board[1,0] == active_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 1
-                else:
-                    h += 1
-            elif board[1,0] == opposing_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += -1
-                else:
-                    h += -1          
-            else:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 0
-                else:
-                    h += 1 
-        else:
-            if board[1,0] == active_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 1
-                else:
-                    h += 1
-            elif board[1,0] == opposing_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += -1
-                else:
-                    h += -1          
-            else:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 0
-                else:
-                    h += 1            
-    elif board[0,0] == opposing_ascii:
-        if board[0,1] == active_ascii:
-            if board[1,0] == active_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 1
-                else:
-                    h += 1
-            elif board[1,0] == opposing_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += -1
-                else:
-                    h += -1          
-            else:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 0
-                else:
-                    h += 1       
-        if board[0,1] == opposing_ascii:
-            if board[1,0] == active_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 1
-                else:
-                    h += 1
-            elif board[1,0] == opposing_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += -1
-                else:
-                    h += -1          
-            else:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 0
-                else:
-                    h += 1 
-        else:
-            if board[1,0] == active_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 1
-                else:
-                    h += 1
-            elif board[1,0] == opposing_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += -1
-                else:
-                    h += -1          
-            else:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 0
-                else:
-                    h += 1 
-    else:
-        if board[0,1] == active_ascii:
-            if board[1,0] == active_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 1
-                else:
-                    h += 1
-            elif board[1,0] == opposing_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += -1
-                else:
-                    h += -1          
-            else:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 0
-                else:
-                    h += 1       
-        if board[0,1] == opposing_ascii:
-            if board[1,0] == active_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 1
-                else:
-                    h += 1
-            elif board[1,0] == opposing_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += -1
-                else:
-                    h += -1          
-            else:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 0
-                else:
-                    h += 1 
-        else:
-            if board[1,0] == active_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 1
-                else:
-                    h += 1
-            elif board[1,0] == opposing_ascii:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += -1
-                else:
-                    h += -1          
-            else:
-                if board[1,1] == active_ascii:
-                    h += 1
-                elif board[1,1] == opposing_ascii:
-                    h += 0
-                else:
-                    h += 1         
+    # y0 x0 potential interuptinos
+    if board[0,0] == active_ascii and board[0,1] == opposing_ascii: 
+        h -= 1
+    if board[0,0] == active_ascii and board[1,0] == opposing_ascii: 
+        h -= 1 
+    if board[0,0] == opposing_ascii and board[0,1] == active_ascii: 
+        h += 1
+    if board[0,0] == opposing_ascii and board[1,0] == active_ascii: 
+        h += 1 
+        
+    if board[0,0] == active_ascii and board[0,2] == active_ascii: 
+        h += 1
+    if board[0,0] == active_ascii and board[2,0] == active_ascii: 
+        h += 1 
+    if board[0,0] == active_ascii and board[2,2] == active_ascii: 
+        h += 1              
+    if board[0,0] == opposing_ascii and board[0,2] == opposing_ascii: 
+        h -= 1
+    if board[0,0] == opposing_ascii and board[2,0] == opposing_ascii: 
+        h -= 1
+    if board[0,0] == opposing_ascii and board[2,2] == opposing_ascii: 
+        h -= 1  
+    
+    # y0 x2  potential interuptions
+    if board[0,2] == active_ascii and board[0,1] == opposing_ascii: 
+        h -= 1
+    if board[0,2] == active_ascii and board[1,2] == opposing_ascii: 
+        h -= 1 
+
+    if board[0,2] == opposing_ascii and board[0,1] == active_ascii: 
+        h += 1
+    if board[0,2] == opposing_ascii and board[1,2] == active_ascii: 
+        h += 1 
+        
+    if board[0,2] == active_ascii and board[2,0] == active_ascii: 
+        h += 1 
+    if board[0,2] == active_ascii and board[2,2] == active_ascii: 
+        h += 1              
+    if board[0,2] == opposing_ascii and board[2,0] == opposing_ascii: 
+        h -= 1
+    if board[0,2] == opposing_ascii and board[2,2] == opposing_ascii: 
+        h -= 1   
+        
+    # y2 x0  potential interuptions
+    if board[2,0] == active_ascii and board[2,1] == opposing_ascii: 
+        h -= 1
+    if board[2,0] == active_ascii and board[1,0] == opposing_ascii: 
+        h -= 1 
+
+    if board[2,0] == opposing_ascii and board[2,1] == active_ascii: 
+        h += 1
+    if board[2,0] == opposing_ascii and board[1,0] == active_ascii: 
+        h += 1 
+
+    if board[2,0] == active_ascii and board[2,2] == active_ascii: 
+        h += 1              
+    if board[2,0] == opposing_ascii and board[2,2] == opposing_ascii: 
+        h -= 1   
+
+    # y2 x2 potential interuptions
+    if board[2,2] == active_ascii and board[2,1] == opposing_ascii: 
+        h -= 1
+    if board[2,2] == active_ascii and board[1,2] == opposing_ascii: 
+        h -= 1 
+    if board[2,2] == opposing_ascii and board[2,1] == active_ascii: 
+        h += 1
+    if board[2,2] == opposing_ascii and board[1,2] == active_ascii: 
+        h += 1 
+        
+    # y1 x1   2 piece defence
+            # Horizontal setup
+    if board[1,1] == active_ascii and board[2,1] == opposing_ascii: 
+        h -= 1 * defence_weight
+    if board[1,1] == active_ascii and board[0,1] == opposing_ascii: 
+        h -= 1 * defence_weight
+    if board[1,1] == opposing_ascii and board[2,1] == active_ascii: 
+        h += 1 * defence_weight
+    if board[1,1] == opposing_ascii and board[0,1] == active_ascii: 
+        h += 1 * defence_weight 
+    if board[1,1] == active_ascii and board[1,2] == opposing_ascii: 
+        h -= 1 * defence_weight
+    if board[1,1] == active_ascii and board[1,0] == opposing_ascii: 
+        h -= 1 * defence_weight
+    if board[1,1] == opposing_ascii and board[1,2] == active_ascii: 
+        h += 1 * defence_weight
+    if board[1,1] == opposing_ascii and board[1,0] == active_ascii: 
+        h += 1 * defence_weight
+            # Diagonal Defence, aggressive and conservative
+    if board[2,2] == opposing_ascii and board[1,1] == active_ascii: 
+        h += 1.5 * defence_weight             
+    if board[2,2] == active_ascii and board[1,1] == opposing_ascii: 
+        h -= 1.5 * defence_weight
+    if board[2,2] == active_ascii and board[1,1] == active_ascii: 
+        h += 1 * defence_weight               
+    if board[2,2] == opposing_ascii and board[1,1] == opposing_ascii: 
+        h -= 1 * defence_weight                 
+    if board[2,0] == opposing_ascii and board[1,1] == opposing_ascii: 
+        h -= 1 * defence_weight 
+    if board[2,0] == active_ascii and board[1,1] == opposing_ascii: 
+        h -= 1.5 * defence_weight          
+    if board[2,0] == active_ascii and board[1,1] == active_ascii: 
+        h += 1 * defence_weight      
+    if board[2,0] == opposing_ascii and board[1,1] == active_ascii: 
+        h += 1.5 * defence_weight  
+    if board[0,2] == active_ascii and board[1,1] == opposing_ascii: 
+        h -= 1.5 * defence_weight  
+    if board[0,2] == opposing_ascii and board[1,1] == active_ascii: 
+        h += 1.5 * defence_weight   
+    if board[0,2] == active_ascii and board[1,1] == active_ascii: 
+        h += 1 * defence_weight     
+    if board[0,2] == opposing_ascii and board[1,1] == opposing_ascii: 
+        h -= 1 * defence_weight 
+    if board[0,0] == active_ascii and board[1,1] == opposing_ascii: 
+        h -= 1.5 * defence_weight  
+    if board[0,0] == opposing_ascii and board[1,1] == active_ascii: 
+        h += 1.5 * defence_weight   
+    if board[0,0] == active_ascii and board[1,1] == active_ascii: 
+        h += 1 * defence_weight     
+    if board[0,0] == opposing_ascii and board[1,1] == opposing_ascii: 
+        h -= 1 * defence_weight 
+    # y1 x1   3 piece defence
+    if board[1,1] == active_ascii and board[2,1] == opposing_ascii and board[0,1] == opposing_ascii: 
+        h -= 2.0 * defence_weight
+    if board[1,1] == opposing_ascii and board[2,1] == active_ascii and board[0,1] == active_ascii: 
+        h += 2.0 * defence_weight  
+    if board[1,1] == active_ascii and board[1,2] == opposing_ascii and board[1,0] == opposing_ascii: 
+        h -= 2.0 * defence_weight
+    if board[1,1] == opposing_ascii and board[1,2] == active_ascii and board[1,0] == active_ascii: 
+        h += 2.0 * defence_weight  
+    
     return h
 
-
-
-def evaluate_heuristic(board):
+def mt_heuristic(q, x):
+    h = 0
+    board = data.board
     active_ascii = data.get_active_player_ascii()
     opposing_ascii = data.get_opposing_player_ascii()
-    h = 0
-    for x in range(0,12):
+    for x in range(x * 6, x * 6 + 6):
         for y in range(0,10):
             if board[y, x] == opposing_ascii and model.check_x_from_center(x, y, True):
                 h=float("-inf")
-                return h
-            #h += twoway_convolution(board, y, x)
-            h += positional_convolution(board, y, x) * 15 / data.get_both_placement_count()
+                q.put(h)
+                return
+            h += threeway_convolution(board, y, x)
+            h += positional_convolution(board, y, x)
+            q.put(h)
+    return
+    
+def evaluate_heuristic():
+    h = 0
+    jobs = []
+    q = Queue()
+    for x in range(0,2):
+        jobs.append(Process(target=mt_heuristic, args=(q, x,)))
+    for job in jobs:
+        job.start()
+    for job in jobs:
+        job.join()
+    while not q.empty():
+    	h += q.get()
     return h
-     
 
 def d2_find_best_solution_no_store():
     start = time.time()  
@@ -266,11 +212,7 @@ def d2_find_best_solution_no_store():
     store_win_state_d0 = data.win_state
     store_last_placement_ascii_d0 = data.last_placement_ascii
     for xd1 in "abcdefghijkl":
-        if time_cutoff and time.time() - start > max_time:
-            break
         for yd1 in range(1,11):
-            if time_cutoff and time.time() - start > max_time:
-                break
             # placement
             if data.get_active_placement_count() < data.max_tokens:
                 exit_reached = not controller.game_loop("p." + str(xd1) + '.' + str(yd1), True)
@@ -298,7 +240,7 @@ def d2_find_best_solution_no_store():
                             if data.get_active_placement_count() < data.max_tokens:
                                 controller.game_loop("p." + str(xd2) + '.' + str(yd2), True)
                                 if data.get_error_message() == "unset":
-                                    h = evaluate_heuristic(data.board)
+                                    h = evaluate_heuristic()
                                     #print(str(alpha) + " " + str(beta) + " " + str(h) + " " + "p." + str(xd2) + '.' + str(yd2))
                                     if h < alpha:
                                         alpha = h
@@ -319,7 +261,7 @@ def d2_find_best_solution_no_store():
                                             controller.game_loop("m." + str(xd2) + '->' + 
                                                 str(xdm2) + '.' + str(yd2) + '->' +  str(ydm2), True)
                                             if data.get_error_message() == "unset":
-                                                h = evaluate_heuristic(data.board) - move_heuristic
+                                                h = evaluate_heuristic() - move_heuristic
                                                 if h < alpha:
                                                     alpha = h 
                                                 if alpha < beta:
@@ -352,7 +294,6 @@ def d2_find_best_solution_no_store():
                 print("x")
                 for xdm1 in "abcdefghijkl":
                     for ydm1 in range(1,11):
-
                         if data.board[ydm1 - 1][ord(xdm1) - 97] != data.empty_ascii:
                             controller.game_loop("m." + str(xd1) + '->' + str(xdm1) + '.' + str(yd1) + '->' +  str(ydm1), True)
                             if data.get_error_message() == "unset":
@@ -378,7 +319,7 @@ def d2_find_best_solution_no_store():
                                         if data.get_active_placement_count() < data.max_tokens:
                                             controller.game_loop("p." + str(xd2) + '.' + str(yd2), True)
                                             if data.get_error_message() == "unset":
-                                                h = evaluate_heuristic(data.board) + move_heuristic
+                                                h = evaluate_heuristic() + move_heuristic
                                                 if h < alpha:
                                                     alpha = h
                                                 if alpha < beta:
@@ -396,7 +337,7 @@ def d2_find_best_solution_no_store():
                                                         controller.game_loop("m." + str(xd2) + '->' + 
                                                             str(xdm2) + '.' + str(yd2) + '->' +  str(ydm2), True)
                                                         if data.get_error_message() == "unset":
-                                                            h = evaluate_heuristic(data.board) - move_heuristic
+                                                            h = evaluate_heuristic() - move_heuristic
                                                             if h < alpha:
                                                                 alpha = h
                                                             if alpha < beta:
